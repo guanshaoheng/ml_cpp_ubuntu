@@ -7,10 +7,9 @@ using namespace std;
 
 int main(int argc, char ** argv){
     cout<< "\n======================\n";
-    cout << argv[0] << endl;
-
-    cout << get_cwd() << endl;
-    cout<< "\n======================\n";
+    cout << "Current running program is:\t" << argv[0] << endl;
+    cout << "CWD:\t"<< get_cwd() << endl;
+    cout<< "======================\n";
 
     // 初始化模型
     Net net(1, 1, 100 );
@@ -36,14 +35,13 @@ int main(int argc, char ** argv){
         op_adam.step();
 
         if (epoch % 100 == 0){
-            cout<< "Epoch " << epoch << "\tloss "<< mse.cpu().item());
+            cout<< "Epoch " << epoch << "\tloss "<< mse.cpu().item()<< endl;
         }
     }
 
     // 保存模型
     save_model(net, net_save_path);
     save_optimizer_state(& op_adam, optim_state_save_path);
-
 
     return 0;
 }
