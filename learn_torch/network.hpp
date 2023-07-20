@@ -2,7 +2,7 @@
 
 struct  NetImpl : torch::nn::Module
 {
-    NetImpl(int in_features, int out_features, int node_num)
+    NetImpl(int in_features=1, int out_features=1, int node_num=100)
         : l1(register_module("l1", torch::nn::Linear(in_features, node_num))),
         l2(register_module("l2", torch::nn::Linear(node_num, node_num))),
         l3(register_module("l3", torch::nn::Linear(node_num, out_features)))
