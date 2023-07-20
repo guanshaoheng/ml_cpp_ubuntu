@@ -6,7 +6,7 @@ int main(int argc, char **argv)
 
     torch::Tensor x = torch::linspace(0, 3.14, 20).view({20, 1});
     
-    torch::Tensor one = torch::ones({3,3};
+    torch::Tensor one = torch::ones({3,3});
     std::cout<< one << std::endl;
 
     std::cout << x << std::endl;

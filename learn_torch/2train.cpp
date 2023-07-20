@@ -14,7 +14,6 @@ int main(int argc, char ** argv){
     
     torch::optim::Adam op_adam(net->parameters());
 
-
     for (int epoch = 0; epoch< 10000; epoch++){ 
         torch::Tensor y_pre = net(x);
         torch::Tensor mse = torch::mse_loss(y_pre, y);

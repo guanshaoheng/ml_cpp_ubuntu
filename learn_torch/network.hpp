@@ -1,6 +1,5 @@
 #include <torch/torch.h>
 
-
 struct  NetImpl : torch::nn::Module
 {
     NetImpl(int in_features, int out_features, int node_num)
