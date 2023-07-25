@@ -58,6 +58,8 @@ struct Net : torch::nn::Module {
     torch::nn::Linear fc2;
 };
 
+
+// 训练函数，模板函数，其中将Dataloader定义为模板类
 template <typename DataLoader>
 void train(
         size_t epoch,
@@ -66,9 +68,10 @@ void train(
         DataLoader& data_loader,
         torch::optim::Optimizer& optimizer,
         size_t dataset_size) {
-    model.train();
+    model.train();  // 修改模型的模式，训练模式
     size_t batch_idx = 0;
     for (auto& batch : data_loader) {
+        // 采用引用调用data_loader中的data
         auto data = batch.data.to(device), targets = batch.target.to(device);
         optimizer.zero_grad();
         auto output = model.forward(data);
@@ -79,7 +82,7 @@ void train(
 
         if (batch_idx++ % kLogInterval == 0) {
             std::printf(
-                    "\rTrain Epoch: %ld [%5ld/%5ld] Loss: %.4f",
+                    "\rTrain Epoch: %ld [%5ld/%5ld] Loss: %.4f", // 字符串前用 "\r"，输出的时候只会更新 不会反复打印
                     epoch,
                     batch_idx * batch.data.size(0),
                     dataset_size,
@@ -88,6 +91,8 @@ void train(
     }
 }
 
+
+// 测试 验证训练的精度
 template <typename DataLoader>
 void test(
         Net& model,
@@ -95,7 +100,7 @@ void test(
         DataLoader& data_loader,
         size_t dataset_size) {
     torch::NoGradGuard no_grad;
-    model.eval();
+    model.eval(); // 修改模型的模式，测试模式 （不需要求导）
     double test_loss = 0;
     int32_t correct = 0;
     for (const auto& batch : data_loader) {
@@ -128,6 +133,8 @@ auto main(int argc, char ** argv) -> int {
 
     torch::manual_seed(1);
 
+    // 设定训练的设备，首先采用类 torch::DeciveType 初始化一个类
+    // 然后采用torch::Device 创建一个device
     torch::DeviceType device_type;
     if (torch::cuda::is_available()) {
         std::cout << "CUDA available! Training on GPU." << std::endl;
@@ -138,17 +145,20 @@ auto main(int argc, char ** argv) -> int {
     }
     torch::Device device(device_type);
 
+    // 创建模型，将模型转移到定义的device上
     Net model;
     model.to(device);
 
+    // 读取数据集 train
     auto train_dataset = torch::data::datasets::MNIST(kDataRoot)
-            .map(torch::data::transforms::Normalize<>(0.1307, 0.3081))
-            .map(torch::data::transforms::Stack<>());
-    const size_t train_dataset_size = train_dataset.size().value();
-    auto train_loader =
+            .map(torch::data::transforms::Normalize<>(0.1307, 0.3081))  //数据集处理
+            .map(torch::data::transforms::Stack<>()); // 数据集转化为stack
+    const size_t train_dataset_size = train_dataset.size().value();  // 获取数据集的大小
+    auto train_loader =  // 建立train_loader
             torch::data::make_data_loader<torch::data::samplers::SequentialSampler>(
                     std::move(train_dataset), kTrainBatchSize);
 
+    //读取数据集 test
     auto test_dataset = torch::data::datasets::MNIST(
             kDataRoot, torch::data::datasets::MNIST::Mode::kTest)
             .map(torch::data::transforms::Normalize<>(0.1307, 0.3081))
@@ -157,6 +167,7 @@ auto main(int argc, char ** argv) -> int {
     auto test_loader =
             torch::data::make_data_loader(std::move(test_dataset), kTestBatchSize);
 
+    // 创建优化器
     torch::optim::SGD optimizer(
             model.parameters(), torch::optim::SGDOptions(0.01).momentum(0.5));
 

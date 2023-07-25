@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.0.0)
 project(ml_cpp VERSION 0.1.0 LANGUAGES C CXX)
 
 
-
 file(GLOB CPP_LIST "./*.cpp")
+
 foreach(FILE_PATH IN LISTS CPP_LIST)
     STRING(REGEX REPLACE ".+/(.+)\\..*"  "\\1" FILE_NAME ${FILE_PATH})
     message(STATUS "==== ${FILE_NAME}: ${FILE_PATH}")

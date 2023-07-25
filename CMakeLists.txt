@@ -21,4 +21,6 @@ add_executable(ml_cpp main.cpp)
 add_subdirectory(./learn_torch)
 add_subdirectory(./learn_opencv)
 add_subdirectory(./learn_torch_opencv)
+add_subdirectory(./learn_general)
+add_subdirectory(./learn_pybind)
 
